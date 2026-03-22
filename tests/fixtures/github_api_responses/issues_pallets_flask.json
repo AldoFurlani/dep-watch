@@ -1,0 +1,33 @@
+[
+  {
+    "number": 5432,
+    "title": "Blueprint name collision with nested blueprints",
+    "state": "open",
+    "user": {"login": "reporter1"},
+    "created_at": "2026-03-17T08:00:00Z",
+    "updated_at": "2026-03-18T12:00:00Z",
+    "closed_at": null,
+    "comments": 3
+  },
+  {
+    "number": 5431,
+    "title": "Update WSGI server recommendation in docs",
+    "state": "closed",
+    "user": {"login": "reporter2"},
+    "created_at": "2026-03-10T09:00:00Z",
+    "updated_at": "2026-03-15T16:00:00Z",
+    "closed_at": "2026-03-15T16:00:00Z",
+    "comments": 1
+  },
+  {
+    "number": 5430,
+    "title": "Add async support for before_request",
+    "state": "open",
+    "user": {"login": "contributor1"},
+    "created_at": "2026-03-05T11:00:00Z",
+    "updated_at": "2026-03-12T14:00:00Z",
+    "closed_at": null,
+    "comments": 7,
+    "pull_request": {"url": "https://api.github.com/repos/pallets/flask/pulls/5430"}
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "number": 5430,
+    "title": "Add async support for before_request",
+    "state": "open",
+    "user": {"login": "contributor1"},
+    "created_at": "2026-03-05T11:00:00Z",
+    "updated_at": "2026-03-12T14:00:00Z",
+    "closed_at": null,
+    "merged_at": null
+  },
+  {
+    "number": 5425,
+    "title": "Fix blueprint registration order",
+    "state": "closed",
+    "user": {"login": "davidism"},
+    "created_at": "2026-02-20T09:00:00Z",
+    "updated_at": "2026-02-25T16:00:00Z",
+    "closed_at": "2026-02-25T16:00:00Z",
+    "merged_at": "2026-02-25T16:00:00Z"
+  }
+]

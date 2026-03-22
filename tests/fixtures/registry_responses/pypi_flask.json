@@ -1,0 +1,21 @@
+{
+  "info": {
+    "name": "Flask",
+    "version": "3.1.0",
+    "summary": "A simple framework for building complex web applications.",
+    "author": "Armin Ronacher",
+    "maintainer": "David Lord",
+    "project_urls": {
+      "Source": "https://github.com/pallets/flask",
+      "Documentation": "https://flask.palletsprojects.com/"
+    },
+    "yanked": false
+  },
+  "releases": {
+    "0.1": [{"upload_time_iso_8601": "2010-04-16T09:00:00Z", "yanked": false}],
+    "1.0": [{"upload_time_iso_8601": "2018-04-26T12:00:00Z", "yanked": false}],
+    "2.0.0": [{"upload_time_iso_8601": "2021-05-11T14:00:00Z", "yanked": false}],
+    "3.0.0": [{"upload_time_iso_8601": "2023-09-30T10:00:00Z", "yanked": false}],
+    "3.1.0": [{"upload_time_iso_8601": "2026-02-15T10:00:00Z", "yanked": false}]
+  }
+}
