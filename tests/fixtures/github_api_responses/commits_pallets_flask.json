@@ -1,0 +1,29 @@
+[
+  {
+    "sha": "abc123def456",
+    "author": {"login": "davidism"},
+    "committer": {"login": "davidism"},
+    "commit": {
+      "message": "Fix type annotation for request context",
+      "committer": {"date": "2026-03-18T10:00:00Z"}
+    }
+  },
+  {
+    "sha": "789ghi012jkl",
+    "author": {"login": "contributor1"},
+    "committer": {"login": "contributor1"},
+    "commit": {
+      "message": "Add support for async teardown",
+      "committer": {"date": "2026-03-15T14:30:00Z"}
+    }
+  },
+  {
+    "sha": "mno345pqr678",
+    "author": null,
+    "committer": null,
+    "commit": {
+      "message": "Update dependencies",
+      "committer": {"date": "2026-03-10T09:00:00Z"}
+    }
+  }
+]

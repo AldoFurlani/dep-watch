@@ -1,0 +1,25 @@
+{
+  "name": "express",
+  "description": "Fast, unopinionated, minimalist web framework",
+  "dist-tags": {
+    "latest": "4.21.0"
+  },
+  "versions": {
+    "4.20.0": {},
+    "4.21.0": {}
+  },
+  "time": {
+    "created": "2010-12-29T19:38:25.450Z",
+    "modified": "2026-01-15T10:00:00.000Z",
+    "4.20.0": "2024-09-10T12:00:00.000Z",
+    "4.21.0": "2025-03-20T14:00:00.000Z"
+  },
+  "maintainers": [
+    {"name": "dougwilson"},
+    {"name": "linusu"}
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/expressjs/express.git"
+  }
+}

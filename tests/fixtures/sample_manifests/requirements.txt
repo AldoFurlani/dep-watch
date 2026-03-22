@@ -1,0 +1,11 @@
+# Main dependencies
+flask>=2.0
+requests==2.31.0
+numpy>=1.24.0
+# Database
+sqlalchemy[asyncio]>=2.0
+
+# Pinned
+gunicorn==21.2.0
+
+-r dev-requirements.txt
