@@ -1,0 +1,96 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "depwatch"
+version = "0.1.0"
+description = "Dependency abandonment prediction service"
+readme = "README.md"
+requires-python = ">=3.12,<3.15"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "httpx>=0.27.0",
+    "asyncpg>=0.30.0",
+    "redis>=5.0.0",
+    "pydantic>=2.9.0",
+    "pydantic-settings>=2.6.0",
+    "alembic>=1.14.0",
+    "psycopg2-binary>=2.9.0",
+    "sqlalchemy>=2.0.0",
+    "torch>=2.2.0",
+    "numpy>=1.26.0",
+    "pandas>=2.2.0",
+    "scikit-learn>=1.5.0",
+    "shap>=0.46.0",
+    "vaderSentiment>=3.3.0",
+    "structlog>=24.0.0",
+    "tenacity>=9.0.0",
+    "boto3>=1.35.0",
+    "python-multipart>=0.0.12",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.8.0",
+    "mypy>=1.13.0",
+    "pre-commit>=4.0.0",
+    "respx>=0.22.0",
+]
+training = [
+    "wandb>=0.18.0",
+    "lifelines>=0.29.0",
+    "matplotlib>=3.9.0",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "SIM",  # flake8-simplify
+    "TCH",  # flake8-type-checking
+    "RUF",  # ruff-specific rules
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["depwatch"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = [
+    "vaderSentiment.*",
+    "shap.*",
+    "wandb.*",
+    "lifelines.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = [
+    "integration: marks tests that require external services (deselect with '-m \"not integration\"')",
+]
+addopts = "-m 'not integration'"
+
+[tool.hatch.build.targets.wheel]
+packages = ["depwatch"]
