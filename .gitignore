@@ -39,6 +39,9 @@ artifacts/
 *.pt
 *.pth
 
+# Training data & cache
+data/
+
 # Docker
 docker-compose.override.yml
 
