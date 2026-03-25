@@ -116,13 +116,13 @@ curl -X POST http://localhost:8000/scan -F "file=@package.json"
 make lint        # ruff check + format check
 make fmt         # auto-fix lint issues
 make typecheck   # mypy strict
-make test        # 142 unit tests
+make test        # unit tests
 make run-api     # dev server with hot reload
 ```
 
 ## Tech Stack
 
-- **API**: Python 3.12+, FastAPI, uvicorn
+- **API**: Python 3.12, FastAPI, uvicorn
 - **Model**: XGBoost, SHAP (TreeExplainer)
 - **Data**: GitHub GraphQL + REST API, httpx (async)
 - **Training**: BigQuery (GH Archive), pandas, scikit-learn

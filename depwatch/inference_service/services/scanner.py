@@ -16,6 +16,8 @@ import re
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
+import httpx
+
 from depwatch.core.feature_extractor import CountOverrides, extract_features
 from depwatch.core.github_client import GitHubClient
 from depwatch.core.github_graphql import GitHubGraphQLClient, GraphQLError
@@ -34,8 +36,6 @@ from depwatch.ingestion_function.registry_clients.npm import NpmClient
 from depwatch.ingestion_function.registry_clients.pypi import PyPIClient
 
 if TYPE_CHECKING:
-    import httpx
-
     from depwatch.common.config import Settings
     from depwatch.inference_service.services.cache import SnapshotCache
     from depwatch.inference_service.services.scorer import Scorer
@@ -88,9 +88,9 @@ class Scanner:
         resolve_tasks = [self._resolve_github_repo(d.name, d.ecosystem) for d in deps]
         resolved_raw = await asyncio.gather(*resolve_tasks, return_exceptions=True)
 
-        # Build mapping: dep → (owner, repo) and identify unique repos
+        # Build mapping: dep → (owner, repo, ecosystem) and identify unique repos
         dep_repos: list[tuple[ParsedDependency, tuple[str, str] | None]] = []
-        unique_repos: dict[tuple[str, str], None] = {}  # ordered set
+        unique_repos: dict[tuple[str, str], Ecosystem] = {}
         for dep, raw in zip(deps, resolved_raw, strict=True):
             if isinstance(raw, BaseException):
                 logger.warning("Failed to resolve %s: %s", dep.name, raw)
@@ -101,7 +101,8 @@ class Scanner:
                 owner_repo: tuple[str, str] = raw
                 dep_repos.append((dep, owner_repo))
                 repo_key = (owner_repo[0].lower(), owner_repo[1].lower())
-                unique_repos[repo_key] = None
+                if repo_key not in unique_repos:
+                    unique_repos[repo_key] = dep.ecosystem
 
         logger.info(
             "%d packages → %d unique repos",
@@ -111,7 +112,11 @@ class Scanner:
 
         # Phase 2: Fetch and score unique repos in parallel
         repo_keys = list(unique_repos.keys())
-        score_coros = [self._score_repo(k[0], k[1]) for k in repo_keys]
+        repo_ecosystems = list(unique_repos.values())
+        score_coros = [
+            self._score_repo(k[0], k[1], eco)
+            for k, eco in zip(repo_keys, repo_ecosystems, strict=True)
+        ]
         scored_raw = await asyncio.gather(*score_coros, return_exceptions=True)
 
         repo_results: dict[tuple[str, str], PackageRiskResponse | None] = {}
@@ -152,7 +157,8 @@ class Scanner:
                 )
             elif repo_key in repo_results:
                 scored = repo_results[repo_key]
-                assert scored is not None
+                if scored is None:  # pragma: no cover — guarded by dict membership
+                    continue
                 results.append(
                     PackageRiskResponse(
                         package=dep.name,
@@ -178,6 +184,7 @@ class Scanner:
         self,
         owner: str,
         repo: str,
+        ecosystem: Ecosystem,
     ) -> PackageRiskResponse | None:
         """Fetch data, compute features, and score a single GitHub repo."""
         now = datetime.now(tz=UTC)
@@ -187,7 +194,7 @@ class Scanner:
         cached = self._cache.get(owner, repo, month)
         if cached is not None:
             logger.info("Cache hit for %s/%s (%s)", owner, repo, month)
-            scored = self._scorer.score(repo, "", owner, repo, cached)
+            scored = self._scorer.score(repo, ecosystem, owner, repo, cached)
             return _to_response(scored)
 
         # Fetch data via GraphQL + REST (throttled to avoid rate limits)
@@ -209,7 +216,7 @@ class Scanner:
             # Fetch contributors via REST for accurate counts
             try:
                 contributors = await self._rest_github.get_contributors(owner, repo)
-            except Exception:
+            except (httpx.HTTPError, httpx.InvalidURL, KeyError, ValueError):
                 logger.warning(
                     "REST contributors failed for %s/%s, using GraphQL approx",
                     owner,
@@ -236,7 +243,7 @@ class Scanner:
 
         # Cache and score
         self._cache.put(owner, repo, month, features)
-        scored = self._scorer.score(repo, "", owner, repo, features)
+        scored = self._scorer.score(repo, ecosystem, owner, repo, features)
         return _to_response(scored)
 
     async def _resolve_github_repo(
@@ -269,7 +276,9 @@ def _to_response(scored: object) -> PackageRiskResponse:
     """Convert a ScoredPackage to a PackageRiskResponse."""
     from depwatch.inference_service.services.scorer import ScoredPackage
 
-    assert isinstance(scored, ScoredPackage)
+    if not isinstance(scored, ScoredPackage):
+        msg = f"Expected ScoredPackage, got {type(scored).__name__}"
+        raise TypeError(msg)
     return PackageRiskResponse(
         package=scored.package_name,
         ecosystem=scored.ecosystem,

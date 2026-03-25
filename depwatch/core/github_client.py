@@ -3,7 +3,7 @@
 import asyncio
 import base64
 import logging
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 
 import httpx
@@ -66,7 +66,7 @@ class GitHubClient:
         """Sleep until rate limit resets if we're close to exhaustion."""
         if self._rate_limit_remaining > 50:
             return
-        now = int(datetime.now().timestamp())
+        now = int(datetime.now(tz=UTC).timestamp())
         wait_seconds = max(self._rate_limit_reset - now + 1, 1)
         logger.warning(
             "Rate limit low (%d remaining), waiting %ds",
