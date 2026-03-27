@@ -7,7 +7,7 @@ RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 # Copy project metadata and source for building
-COPY pyproject.toml .
+COPY pyproject.toml README.md ./
 COPY depwatch/ depwatch/
 
 # Install the package
