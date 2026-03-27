@@ -99,6 +99,13 @@ module = "depwatch.model_training.*"
 disallow_any_unimported = false
 disable_error_code = ["import-untyped"]
 
+[[tool.mypy.overrides]]
+module = [
+    "depwatch.model_training.temporal_models",
+    "depwatch.model_training.train_temporal",
+]
+follow_imports = "skip"
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
