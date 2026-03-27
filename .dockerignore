@@ -14,7 +14,6 @@ notebooks/
 .env.*
 !.env.example
 CLAUDE.md
-README.md
 Makefile
 .pre-commit-config.yaml
 .gitignore
