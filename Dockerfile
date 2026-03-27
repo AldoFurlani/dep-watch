@@ -2,22 +2,24 @@ FROM python:3.12-slim AS builder
 
 WORKDIR /app
 
-# Install build dependencies
-RUN pip install --no-cache-dir hatchling
+# Install into a virtual env so we can copy it cleanly
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
 # Copy project metadata and source for building
 COPY pyproject.toml .
 COPY depwatch/ depwatch/
 
-# Build wheel and install into a clean prefix
-RUN pip install --no-cache-dir --prefix=/install .
+# Install the package
+RUN pip install --no-cache-dir .
 
 FROM python:3.12-slim
 
 WORKDIR /app
 
-# Copy installed packages from builder
-COPY --from=builder /install /usr/local
+# Copy virtual env from builder
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
 # Copy model artifact (baked into image)
 COPY artifacts/latest/ artifacts/latest/
